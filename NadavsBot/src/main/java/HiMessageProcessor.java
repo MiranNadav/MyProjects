@@ -8,10 +8,10 @@ import com.pengrad.telegrambot.request.SendMessage;
 public class HiMessageProcessor {
 
     public SendMessage process(Message message) {
-            SendMessage request = new SendMessage(message.chat().id(), "bye")
-                    .parseMode(ParseMode.HTML)
-                    .disableWebPagePreview(true)
-                    .disableNotification(true);
-            return request;
+        SendMessage request = new SendMessage(message.chat().id(), "bye")
+                .parseMode(ParseMode.HTML)
+                .disableWebPagePreview(true)
+                .disableNotification(true);
+        return request;
     }
 }
