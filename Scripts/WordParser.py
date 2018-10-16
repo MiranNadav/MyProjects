@@ -1,9 +1,10 @@
 import os
+import re
 
 # textfile = '/Users/nmiran/Desktop/nadav.txt'
 textfile = '/Users/nmiran/Desktop/BenGurion.txt'
 excelFilePath = '/Users/nmiran/Desktop/nadav.xlsx'
-ignoreWords = ['a', ' about ', ' above ', ' after ', ' again ', ' against ', ' all ', ' am ', ' an ', ' and ', ' any ',
+ignoreWords = [' a ', ' about ', ' above ', ' after ', ' again ', ' against ', ' all ', ' am ', ' an ', ' and ', ' any ',
                ' are ', ' aren\'t ', ' as ', ' at ', ' be ', ' because ', ' been ', ' before ', ' being ', ' below ',
                ' between ', ' both ', ' but ', ' by ', ' can\'t ', ' cannot ', ' could ', ' couldn\'t ', ' did ',
                ' didn\'t ', ' do ', ' does ', ' doesn\'t ', ' doing ', ' don\'t ', ' down ', ' during ', ' each ',
@@ -22,7 +23,7 @@ ignoreWords = ['a', ' about ', ' above ', ' after ', ' again ', ' against ', ' a
                ' when\'s ', ' where ', ' where\'s ', ' which ', ' while ', ' who ', ' who\'s ', ' whom ', ' why ',
                ' why\'s ', ' with ', ' won\'t ', ' would ', ' wouldn\'t ', ' you ', ' you\'d ', ' you\'ll ',
                ' you\'re ', ' you\'ve ', ' your ', ' yours ', ' yourself ', ' yourselves ']
-ignorSigns = ['(', ')', ';', '.', ',', '\\', '/', '?', '!', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+ignoreSigns = ['-', '(', ')', ':', ';', '.', ',', '\\', '/', '?', '!', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                               '0']
 
 def replaceWords(data, words, sign):
@@ -63,7 +64,7 @@ def getValidFilePath():
 
 def receiveWordsToFind():
     listOfWords = []
-
+    print ('dont forget to enter \'stop\' to end the script')
     inputWord = getValidInputWord()
 
     while inputWord != -1 and inputWord != 'stop':
@@ -88,7 +89,7 @@ def removeDups(duplicate):
     return final_list
 
 
-def writeToExcelFile(findingsList):
+def writeToExcelFile(findingsList, name):
     import openpyxl
     import os
     import datetime
@@ -105,7 +106,7 @@ def writeToExcelFile(findingsList):
     for word in findingsList:
         ws.append(word)
 
-    file_name = '/Word_occurences-' + now.strftime('%d-%m-%y-%H%M') + '.xlsx'
+    file_name = '/Word_occurences-' + name + "-" + now.strftime('%d-%m-%y-%H%M') + '.xlsx'
     path_to_save = os.getcwd() + file_name
     wb.save(path_to_save)
 
@@ -121,21 +122,42 @@ def openFile():
     except:
         return openFile()
 
+def getWordsList(text):
+    return re.compile('\w+').findall(text)
 
+def removeErrorWords(word_list):
+    clean_list = []
+    for word in word_list:
+        if len(word) > 1:
+            clean_list.append(word)
+    return clean_list
 
 def main():
 
     all_words = openFile()
 
+
     # Clear unnecessary signs and words
     all_words = all_words.lower()
     all_words = replaceWords(all_words,
-                             ignorSigns, '')
+                             ignoreSigns, ' ')
     all_words = replaceWords(all_words, ignoreWords, ' ')
+
+    all_words_list = getWordsList(all_words)
+    [word.lower() for word in all_words_list]
+    all_words_list = removeDups(all_words_list)
+    all_words_list = removeErrorWords(all_words_list)
 
     words_to_find = removeDups(receiveWordsToFind())
     findingsList = listOfOccurences(words_to_find, all_words)
+    findingsList.sort(key=lambda tup: tup[1])
+    findingsList = list(reversed(findingsList))
 
-    writeToExcelFile(findingsList)
+    findingslist_unfiltered = listOfOccurences(all_words_list, all_words)
+    findingslist_unfiltered.sort(key=lambda  tup: tup[1])
+    findingslist_unfiltered = list(reversed(findingslist_unfiltered))
+    writeToExcelFile(findingslist_unfiltered, 'All')
+
+    writeToExcelFile(findingsList, 'Filtered')
 
 main()
