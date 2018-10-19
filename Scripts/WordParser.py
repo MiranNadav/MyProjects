@@ -1,10 +1,14 @@
 import os
 import re
+import codecs
 
 # textfile = '/Users/nmiran/Desktop/nadav.txt'
 textfile = '/Users/nmiran/Desktop/BenGurion.txt'
+folderpath = '/Users/nmiran/Desktop/textfiles'
+
 excelFilePath = '/Users/nmiran/Desktop/nadav.xlsx'
-ignoreWords = [' a ', ' about ', ' above ', ' after ', ' again ', ' against ', ' all ', ' am ', ' an ', ' and ', ' any ',
+ignoreWords = [' a ', ' about ', ' above ', ' after ', ' again ', ' against ', ' all ', ' am ', ' an ', ' and ',
+               ' any ',
                ' are ', ' aren\'t ', ' as ', ' at ', ' be ', ' because ', ' been ', ' before ', ' being ', ' below ',
                ' between ', ' both ', ' but ', ' by ', ' can\'t ', ' cannot ', ' could ', ' couldn\'t ', ' did ',
                ' didn\'t ', ' do ', ' does ', ' doesn\'t ', ' doing ', ' don\'t ', ' down ', ' during ', ' each ',
@@ -23,8 +27,8 @@ ignoreWords = [' a ', ' about ', ' above ', ' after ', ' again ', ' against ', '
                ' when\'s ', ' where ', ' where\'s ', ' which ', ' while ', ' who ', ' who\'s ', ' whom ', ' why ',
                ' why\'s ', ' with ', ' won\'t ', ' would ', ' wouldn\'t ', ' you ', ' you\'d ', ' you\'ll ',
                ' you\'re ', ' you\'ve ', ' your ', ' yours ', ' yourself ', ' yourselves ']
-ignoreSigns = ['-', '(', ')', ':', ';', '.', ',', '\\', '/', '?', '!', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-                              '0']
+ignoreSigns = ['-', '(', ')', ':', ';', '.', ',', '\\', '/', '?', '!']
+
 
 def replaceWords(data, words, sign):
     for word in words:
@@ -46,12 +50,20 @@ def listOfOccurences(wordList, text):
 def getValidInputWord():
     try:
         input_from_user = input(
-            'Please enter a words you want to find - either one word or a list of words seperated by space\n')
+            'Please enter words you want to find - either one word or a list of words seperated by space\n')
         return input_from_user
     except:
         print('Wrong Input, please enter a valid String!')
         return getValidInputWord()
 
+def getValidPhrase():
+    try:
+        input_from_user = input(
+            'Please enter a phrase you want to find\n')
+        return input_from_user
+    except:
+        print('Wrong Input, please enter a valid String!')
+        return getValidInputWord()
 
 def getValidFilePath():
     try:
@@ -62,12 +74,30 @@ def getValidFilePath():
         return getValidFilePath()
 
 
+def getValidFolderPath():
+    try:
+        input_from_user = input('Please enter a folder path:\n')
+        # if input_from_user == "":
+        #     return
+        if os.path.isdir(input_from_user):
+            return input_from_user
+        else:
+            print('This is not a folder, please enter a valid path or press Enter to exit')
+            return getValidFolderPath()
+    except:
+        print('Illegal input, please enter a valid path!')
+        return getValidFolderPath()
+
+
+
+
+
 def receiveWordsToFind():
     listOfWords = []
-    print ('dont forget to enter \'stop\' to end the script')
+    print ('dont forget to enter **\'stop\'** to finish')
     inputWord = getValidInputWord()
 
-    while inputWord != -1 and inputWord != 'stop':
+    while inputWord != -1 and inputWord.lower() != 'stop':
         try:
             if inputWord.index(' ') > 0:
                 currentWords = inputWord.replace(" ", " ").split(" ")
@@ -78,8 +108,16 @@ def receiveWordsToFind():
             listOfWords.append(inputWord)
             inputWord = getValidInputWord()
 
+    listOfWords = receivePhrasesToFind(listOfWords)
     return listOfWords
 
+def receivePhrasesToFind(listOfWords):
+    print ('Now, enter full phrases (full string - for example "Hello World"). dont forget to enter **\'stop\'** to end the script')
+    inputPhrase = getValidPhrase()
+    while inputPhrase != 'stop':
+        listOfWords.append(inputPhrase)
+        inputPhrase = getValidPhrase()
+    return listOfWords
 
 def removeDups(duplicate):
     final_list = []
@@ -89,7 +127,7 @@ def removeDups(duplicate):
     return final_list
 
 
-def writeToExcelFile(findingsList, name):
+def writeToExcelFile(findingsList, file_name, name):
     import openpyxl
     import os
     import datetime
@@ -106,8 +144,8 @@ def writeToExcelFile(findingsList, name):
     for word in findingsList:
         ws.append(word)
 
-    file_name = '/Word_occurences-' + name + "-" + now.strftime('%d-%m-%y-%H%M') + '.xlsx'
-    path_to_save = os.getcwd() + file_name
+    excel_path_name = "/" + file_name + '-Word-occurences-' + name + "-" + now.strftime('%d-%m-%y-%H%M') + '.xlsx'
+    path_to_save = os.getcwd() + excel_path_name
     wb.save(path_to_save)
 
 
@@ -115,15 +153,19 @@ def openFile():
     text_file_path = getValidFilePath()
     try:
         # with open(text_file_path, 'r') as myfile:
-        import codecs
         with codecs.open(text_file_path, "r", encoding='utf-8', errors='ignore') as myfile:
             all_words = myfile.read().replace('\n', ' ')
         return all_words
     except:
         return openFile()
 
+def openFileFromFolder(file):
+    return file.read().replace('\n', ' ')
+
+
 def getWordsList(text):
     return re.compile('\w+').findall(text)
+
 
 def removeErrorWords(word_list):
     clean_list = []
@@ -132,9 +174,7 @@ def removeErrorWords(word_list):
             clean_list.append(word)
     return clean_list
 
-def main():
-
-    all_words = openFile()
+def mainProcessor(all_words, file_name, words_to_find):
 
 
     # Clear unnecessary signs and words
@@ -142,22 +182,63 @@ def main():
     all_words = replaceWords(all_words,
                              ignoreSigns, ' ')
     all_words = replaceWords(all_words, ignoreWords, ' ')
+    # all_words_list = re.findall(r'[^\s!,.?":;0-9]+', all_words)
 
     all_words_list = getWordsList(all_words)
     [word.lower() for word in all_words_list]
     all_words_list = removeDups(all_words_list)
     all_words_list = removeErrorWords(all_words_list)
 
-    words_to_find = removeDups(receiveWordsToFind())
     findingsList = listOfOccurences(words_to_find, all_words)
     findingsList.sort(key=lambda tup: tup[1])
     findingsList = list(reversed(findingsList))
 
     findingslist_unfiltered = listOfOccurences(all_words_list, all_words)
-    findingslist_unfiltered.sort(key=lambda  tup: tup[1])
+    findingslist_unfiltered.sort(key=lambda tup: tup[1])
     findingslist_unfiltered = list(reversed(findingslist_unfiltered))
-    writeToExcelFile(findingslist_unfiltered, 'All')
+    writeToExcelFile(findingslist_unfiltered, file_name,'All')
 
-    writeToExcelFile(findingsList, 'Filtered')
+    writeToExcelFile(findingsList, file_name,'Filtered')
+
+
+
+def main():
+    user_selection = 0
+    while user_selection != 1 and user_selection != 2:
+        try:
+            user_selection = input("Press 1 to enter file path, and 2 for a folder:\n")
+        except:
+            continue
+
+    if user_selection == 1:
+        file = openFile()
+        words_to_find = removeDups(receiveWordsToFind())
+        mainProcessor(file, "", words_to_find)
+    else:
+        folder_path = getValidFolderPath()
+        words_to_find = removeDups(receiveWordsToFind())
+
+        files = []
+        for file_path in os.listdir(folder_path):
+            if file_path.endswith('.txt'):
+                file = codecs.open(folder_path+"/"+file_path, "r", encoding='utf-8', errors='ignore')
+                files.append(file)
+
+        for file in files:
+            file_base_name = os.path.basename(file.name)
+            file_base_name = os.path.splitext(file_base_name)[0]
+            all_words = openFileFromFolder(file)
+            mainProcessor(all_words, file_base_name, words_to_find)
+
 
 main()
+
+
+# def nadav():
+#     import codecs
+#     text_file_path = '/Users/nmiran/Desktop/textfiles/EnglishAll.txt'
+#
+#     with codecs.open(text_file_path, "r", encoding='utf-8', errors='ignore') as myfile:
+#         all_words = myfile.read().replace('\n', ' ')
+#
+#     return
