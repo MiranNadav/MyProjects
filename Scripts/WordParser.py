@@ -27,7 +27,7 @@ ignoreWords = [' a ', ' about ', ' above ', ' after ', ' again ', ' against ', '
                ' when\'s ', ' where ', ' where\'s ', ' which ', ' while ', ' who ', ' who\'s ', ' whom ', ' why ',
                ' why\'s ', ' with ', ' won\'t ', ' would ', ' wouldn\'t ', ' you ', ' you\'d ', ' you\'ll ',
                ' you\'re ', ' you\'ve ', ' your ', ' yours ', ' yourself ', ' yourselves ']
-ignoreSigns = ['-', '(', ')', ':', ';', '.', ',', '\\', '/', '?', '!']
+ignoreSigns = ['\'', '-', '(', ')', ':', ';', '.', ',', '\\', '/', '?', '!']
 
 
 def replaceWords(data, words, sign):
