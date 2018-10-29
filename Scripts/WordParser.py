@@ -37,7 +37,8 @@ def replaceWords(data, words, sign):
 
 
 def countOccurrences(word, text):
-    return text.lower().split().count(word.lower())
+    # Move the split to be done only once outside the function
+    return text.lower().encode('utf-8').split().count(word.encode('utf-8').lower())
 
 
 def listOfOccurences(wordList, text):
@@ -89,9 +90,6 @@ def getValidFolderPath():
         return getValidFolderPath()
 
 
-
-
-
 def receiveWordsToFind():
     listOfWords = []
     print ('dont forget to enter **\'stop\'** to finish')
@@ -111,6 +109,7 @@ def receiveWordsToFind():
     listOfWords = receivePhrasesToFind(listOfWords)
     return listOfWords
 
+
 def receivePhrasesToFind(listOfWords):
     print ('Now, enter full phrases (full string - for example "Hello World"). dont forget to enter **\'stop\'** to end the script')
     inputPhrase = getValidPhrase()
@@ -118,6 +117,7 @@ def receivePhrasesToFind(listOfWords):
         listOfWords.append(inputPhrase)
         inputPhrase = getValidPhrase()
     return listOfWords
+
 
 def removeDups(duplicate):
     final_list = []
@@ -138,8 +138,6 @@ def writeToExcelFile(findingsList, file_name, name):
     ws['A1'] = textfile
     ws['A2'] = 'Word'
     ws['B2'] = 'Num Of Occurences'
-
-    # print(findingsList)
 
     for word in findingsList:
         ws.append(word)
@@ -164,7 +162,10 @@ def openFileFromFolder(file):
 
 
 def getWordsList(text):
-    return re.compile('\w+').findall(text)
+    print()
+    # pattern = re.compile("^\s+|\s*,\s*|\s+$")
+    # return re.compile('\w+').findall(text.encode('utf-8'))
+    return re.split('\s+', text)
 
 
 def removeErrorWords(word_list):
@@ -174,8 +175,8 @@ def removeErrorWords(word_list):
             clean_list.append(word)
     return clean_list
 
-def mainProcessor(all_words, file_name, words_to_find):
 
+def mainProcessor(all_words, file_name, words_to_find):
 
     # Clear unnecessary signs and words
     all_words = all_words.lower()
@@ -204,16 +205,19 @@ def mainProcessor(all_words, file_name, words_to_find):
 
 def main():
     user_selection = 0
-    while user_selection != 1 and user_selection != 2:
+    while user_selection != "1" and user_selection != "2":
         try:
             user_selection = input("Press 1 to enter file path, and 2 for a folder:\n")
         except:
             continue
 
-    if user_selection == 1:
+    # User wants to enter one file only
+    if user_selection == "1":
         file = openFile()
         words_to_find = removeDups(receiveWordsToFind())
         mainProcessor(file, "", words_to_find)
+
+    # User wants to enter a folder with multiple files
     else:
         folder_path = getValidFolderPath()
         words_to_find = removeDups(receiveWordsToFind())
@@ -237,7 +241,7 @@ main()
 # def nadav():
 #     import codecs
 #     text_file_path = '/Users/nmiran/Desktop/textfiles/EnglishAll.txt'
-#
+#       "/Users/nmiran/Desktop/Hebrew.txt"
 #     with codecs.open(text_file_path, "r", encoding='utf-8', errors='ignore') as myfile:
 #         all_words = myfile.read().replace('\n', ' ')
 #
