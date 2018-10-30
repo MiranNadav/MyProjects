@@ -7,38 +7,196 @@ textfile = '/Users/nmiran/Desktop/BenGurion.txt'
 folderpath = '/Users/nmiran/Desktop/textfiles'
 
 excelFilePath = '/Users/nmiran/Desktop/nadav.xlsx'
-ignoreWords = [' a ', ' about ', ' above ', ' after ', ' again ', ' against ', ' all ', ' am ', ' an ', ' and ',
-               ' any ',
-               ' are ', ' aren\'t ', ' as ', ' at ', ' be ', ' because ', ' been ', ' before ', ' being ', ' below ',
-               ' between ', ' both ', ' but ', ' by ', ' can\'t ', ' cannot ', ' could ', ' couldn\'t ', ' did ',
-               ' didn\'t ', ' do ', ' does ', ' doesn\'t ', ' doing ', ' don\'t ', ' down ', ' during ', ' each ',
-               ' few ', ' for ', ' from ', ' further ', ' had ', ' hadn\'t ', ' has ', ' hasn\'t ', ' have ',
-               ' haven\'t ', ' having ', ' he ', ' he\'d ', ' he\'ll ', ' he\'s ', ' her ', ' here ', ' here\'s ',
-               ' hers ', ' herself ', ' him ', ' himself ', ' his ', ' how ', ' how\'s ', ' i ', ' i\'d ', ' i\'ll ',
-               ' i\'m ', ' i\'ve ', ' if ', ' in ', ' into ', ' is ', ' isn\'t ', ' it ', ' it\'s ', ' its ',
-               ' itself ', ' let\'s ', ' me ', ' more ', ' most ', ' mustn\'t ', ' my ', ' myself ', ' no ', ' nor ',
-               ' not ', ' of ', ' off ', ' on ', ' once ', ' only ', ' or ', ' other ', ' ought ', ' our ',
-               ' ours     ', ' ourselves ', ' out ', ' over ', ' own ', ' same ', ' shan\'t ', ' she ', ' she\'d ',
-               ' she\'ll ', ' she\'s ', ' should ', ' shouldn\'t ', ' so ', ' some ', ' such ', ' than ', ' that ',
-               ' that\'s ', ' the ', ' their ', ' theirs ', ' them ', ' themselves ', ' then ', ' there ', ' there\'s ',
-               ' these ', ' they ', ' they\'d ', ' they\'ll ', ' they\'re ', ' they\'ve ', ' this ', ' those ',
-               ' through ', ' to ', ' too ', ' under ', ' until ', ' up ', ' very ', ' was ', ' wasn\'t ', ' we ',
-               ' we\'d ', ' we\'ll ', ' we\'re ', ' we\'ve ', ' were ', ' weren\'t ', ' what ', ' what\'s ', ' when ',
-               ' when\'s ', ' where ', ' where\'s ', ' which ', ' while ', ' who ', ' who\'s ', ' whom ', ' why ',
-               ' why\'s ', ' with ', ' won\'t ', ' would ', ' wouldn\'t ', ' you ', ' you\'d ', ' you\'ll ',
-               ' you\'re ', ' you\'ve ', ' your ', ' yours ', ' yourself ', ' yourselves ']
+ignoreWords = ['a','about',
+               'above',
+               'after',
+               'again',
+               'against',
+               'all',
+               'am',
+               'an',
+               'and',
+               'any',
+               'are',
+               'aren\'t',
+                      'as',
+               'at',
+               'be',
+               'because',
+               'been',
+               'before',
+               'being',
+               'below',
+               'between',
+               'both',
+               'but',
+               'by',
+               'can\'t',
+                     'cannot',
+               'could',
+               'couldn\'t',
+                        'did',
+               'didn\'t',
+                      'do',
+               'does',
+               'doesn\'t',
+                       'doing',
+               'don\'t',
+                     'down',
+               'during',
+               'each',
+               'few',
+               'for',
+               'from',
+               'further',
+               'had',
+               'hadn\'t',
+                      'has',
+               'hasn\'t',
+                      'have',
+               'haven\'t',
+                       'having',
+               'he',
+               'he\'d',
+                    'he\'ll',
+                          'he\'s',
+                               'her',
+               'here',
+               'here\'s',
+                      'hers',
+               'herself',
+               'him',
+               'himself',
+               'his',
+               'how',
+               'how\'s',
+                     'i',
+               'i\'d',
+                   'i\'ll',
+                        'i\'m',
+                            'i\'ve',
+                                 'if',
+               'in',
+               'into',
+               'is',
+               'isn\'t',
+                     'it',
+               'it\'s',
+                    'its',
+               'itself',
+               'let\'s',
+                     'me',
+               'more',
+               'most',
+               'mustn\'t',
+                       'my',
+               'myself',
+               'no',
+               'nor',
+               'not',
+               'of',
+               'off',
+               'on',
+               'once',
+               'only',
+               'or',
+               'other',
+               'ought',
+               'our',
+               'ours',
+               'ourselves',
+               'out',
+               'over',
+               'own',
+               'same',
+               'shan\'t',
+                      'she',
+               'she\'d',
+                     'she\'ll',
+                            'she\'s',
+                                  'should',
+               'shouldn\'t',
+                         'so',
+               'some',
+               'such',
+               'than',
+               'that',
+               'that\'s',
+                      'the',
+               'their',
+               'theirs',
+               'them',
+               'themselves',
+               'then',
+               'there',
+               'there\'s',
+                       'these',
+               'they',
+               'they\'d',
+                      'they\'ll',
+                              'they\'re',
+                                      'they\'ve',
+                                              'this',
+               'those',
+               'through',
+               'to',
+               'too',
+               'under',
+               'until',
+               'up',
+               'very',
+               'was',
+               'wasn\'t',
+                      'we',
+               'we\'d',
+                    'we\'ll',
+                          'we\'re',
+                                'we\'ve',
+                                      'were',
+               'weren\'t',
+                       'what',
+               'what\'s',
+                      'when',
+               'when\'s',
+                      'where',
+               'where\'s',
+                       'which',
+               'while',
+               'who',
+               'who\'s',
+                     'whom',
+               'why',
+               'why\'s',
+                     'with',
+               'won\'t',
+                     'would',
+               'wouldn\'t',
+                        'you',
+               'you\'d',
+                     'you\'ll',
+                            'you\'re',
+                                   'you\'ve','your',
+               'yours',
+               'yourself',
+               'yourselves', ]
 ignoreSigns = ['\'', '-', '(', ')', ':', ';', '.', ',', '\\', '/', '?', '!']
 
 
-def replaceWords(data, words, sign):
+def replaceSigns(data, words, sign):
     for word in words:
         data = data.replace(word, sign)
     return data
 
 
+def replaceWords(data, words, sign):
+    for word in words:
+        data = re.sub(r'\b%s\b' % word, sign, data)
+        # data = data.replace(word, sign)
+    return data
+
+
 def countOccurrences(word, text):
-    # Move the split to be done only once outside the function
-    return text.lower().encode('utf-8').split().count(word.encode('utf-8').lower())
+    return text.lower().split().count(word.lower())
 
 
 def listOfOccurences(wordList, text):
@@ -57,6 +215,7 @@ def getValidInputWord():
         print('Wrong Input, please enter a valid String!')
         return getValidInputWord()
 
+
 def getValidPhrase():
     try:
         input_from_user = input(
@@ -65,6 +224,7 @@ def getValidPhrase():
     except:
         print('Wrong Input, please enter a valid String!')
         return getValidInputWord()
+
 
 def getValidFilePath():
     try:
@@ -111,7 +271,8 @@ def receiveWordsToFind():
 
 
 def receivePhrasesToFind(listOfWords):
-    print ('Now, enter full phrases (full string - for example "Hello World"). dont forget to enter **\'stop\'** to end the script')
+    print (
+        'Now, enter full phrases (full string - for example "Hello World"). dont forget to enter **\'stop\'** to end the script')
     inputPhrase = getValidPhrase()
     while inputPhrase != 'stop':
         listOfWords.append(inputPhrase)
@@ -139,6 +300,8 @@ def writeToExcelFile(findingsList, file_name, name):
     ws['A2'] = 'Word'
     ws['B2'] = 'Num Of Occurences'
 
+    # print(findingsList)
+
     for word in findingsList:
         ws.append(word)
 
@@ -157,30 +320,28 @@ def openFile():
     except:
         return openFile()
 
+
 def openFileFromFolder(file):
     return file.read().replace('\n', ' ')
 
 
 def getWordsList(text):
-    print()
-    # pattern = re.compile("^\s+|\s*,\s*|\s+$")
-    # return re.compile('\w+').findall(text.encode('utf-8'))
+    # return re.compile('\w+').findall(text)
     return re.split('\s+', text)
 
 
 def removeErrorWords(word_list):
     clean_list = []
     for word in word_list:
-        if len(word) > 1:
+        if len(word) > 1 and not word.isdigit():
             clean_list.append(word)
     return clean_list
 
 
 def mainProcessor(all_words, file_name, words_to_find):
-
     # Clear unnecessary signs and words
     all_words = all_words.lower()
-    all_words = replaceWords(all_words,
+    all_words = replaceSigns(all_words,
                              ignoreSigns, ' ')
     all_words = replaceWords(all_words, ignoreWords, ' ')
     # all_words_list = re.findall(r'[^\s!,.?":;0-9]+', all_words)
@@ -197,27 +358,23 @@ def mainProcessor(all_words, file_name, words_to_find):
     findingslist_unfiltered = listOfOccurences(all_words_list, all_words)
     findingslist_unfiltered.sort(key=lambda tup: tup[1])
     findingslist_unfiltered = list(reversed(findingslist_unfiltered))
-    writeToExcelFile(findingslist_unfiltered, file_name,'All')
+    writeToExcelFile(findingslist_unfiltered, file_name, 'All')
 
-    writeToExcelFile(findingsList, file_name,'Filtered')
-
+    writeToExcelFile(findingsList, file_name, 'Filtered')
 
 
 def main():
     user_selection = 0
-    while user_selection != "1" and user_selection != "2":
+    while user_selection != 1 and user_selection != 2:
         try:
             user_selection = input("Press 1 to enter file path, and 2 for a folder:\n")
         except:
             continue
 
-    # User wants to enter one file only
-    if user_selection == "1":
+    if user_selection == 1:
         file = openFile()
         words_to_find = removeDups(receiveWordsToFind())
         mainProcessor(file, "", words_to_find)
-
-    # User wants to enter a folder with multiple files
     else:
         folder_path = getValidFolderPath()
         words_to_find = removeDups(receiveWordsToFind())
@@ -225,7 +382,7 @@ def main():
         files = []
         for file_path in os.listdir(folder_path):
             if file_path.endswith('.txt'):
-                file = codecs.open(folder_path+"/"+file_path, "r", encoding='utf-8', errors='ignore')
+                file = codecs.open(folder_path + "/" + file_path, "r", encoding='utf-8', errors='ignore')
                 files.append(file)
 
         for file in files:
@@ -237,11 +394,10 @@ def main():
 
 main()
 
-
 # def nadav():
 #     import codecs
 #     text_file_path = '/Users/nmiran/Desktop/textfiles/EnglishAll.txt'
-#       "/Users/nmiran/Desktop/Hebrew.txt"
+#
 #     with codecs.open(text_file_path, "r", encoding='utf-8', errors='ignore') as myfile:
 #         all_words = myfile.read().replace('\n', ' ')
 #
