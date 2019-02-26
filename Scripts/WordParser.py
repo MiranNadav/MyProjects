@@ -413,6 +413,19 @@ def listOfOccurences(wordList, text):
         list.append((word, countOccurrences(word, text)))
     return list
 
+def listOfOccurences2(wordsList, text):
+  list = []
+  for word in wordsList:
+    list.append((word, countOccurences2(word,text)))
+  return list
+
+def countOccurences2 (partialWord, text):
+  wordsList = text.lower().split()
+  count = 0
+  for word in wordsList:
+    if partialWord in word:
+      count = count + 1 
+  return count
 
 def getValidInputWord():
     try:
@@ -573,9 +586,17 @@ def mainProcessor(all_words, file_name, words_to_find):
     findingslist_unfiltered.sort(key=lambda tup: tup[1])
     findingslist_unfiltered = list(reversed(findingslist_unfiltered))
 
+    # Create Findings list from regex of given words
+    findingsListContains = listOfOccurences2(words_to_find, all_words)
+    findingsListContains.sort(key=lambda tup: tup[1])
+    findingsListContains = list(reversed(findingsListContains))
+
+
+
     # Write 2 excel files - filtered & unfiltered
     writeToExcelFile(findingslist_unfiltered, file_name, 'All')
     writeToExcelFile(findingsList, file_name, 'Filtered')
+    writeToExcelFile(findingsListContains, file_name,'Contains')
 
 
 def main():
