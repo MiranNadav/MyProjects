@@ -416,16 +416,30 @@ def listOfOccurences(wordList, text):
 def listOfOccurences2(wordsList, text):
   list = []
   for word in wordsList:
-    list.append((word, countOccurences2(word,text)))
+    result = countOccurences2(word,text)
+    list.append((word, result[0], result[1]))
   return list
 
 def countOccurences2 (partialWord, text):
   wordsList = text.lower().split()
+  matchingWords = []
+
   count = 0
   for word in wordsList:
-    if partialWord in word:
-      count = count + 1 
-  return count
+    word_unicode = word.encode('utf-8')
+    if partialWord in word_unicode:
+      count = count + 1
+      matchingWords.append(word_unicode)
+
+
+  matchingWords = {word:matchingWords.count(word) for word in matchingWords}
+  matchingWords = sorted(matchingWords.items(),key=lambda x:x[1])
+  matchesList = ""
+  for match in matchingWords:
+      matchesList = matchesList + match[0] + ' -- ' + str(match[1]) + ", "
+  # Slice last ","
+  matchesList = matchesList[0:len(matchesList)-2]
+  return (count, matchesList)
 
 def getValidInputWord():
     try:
