@@ -8,6 +8,8 @@ public class RemindersBotApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RemindersBotApplication.class, args);
+		MyBot mybot = new MyBot();
+		mybot.Start();
 	}
 
 }
