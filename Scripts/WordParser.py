@@ -427,7 +427,7 @@ def countOccurences2 (partialWord, text):
   count = 0
   for word in wordsList:
     word_unicode = word.encode('utf-8')
-    if partialWord in word_unicode:
+    if partialWord in word:
       count = count + 1
       matchingWords.append(word_unicode)
 
@@ -436,7 +436,7 @@ def countOccurences2 (partialWord, text):
   matchingWords = sorted(matchingWords.items(),key=lambda x:x[1])
   matchesList = ""
   for match in matchingWords:
-      matchesList = matchesList + match[0] + ' -- ' + str(match[1]) + ", "
+      matchesList = matchesList + str(match[0].decode("utf-8")) + ' -- ' + str(match[1]) + ", "
   # Slice last ","
   matchesList = matchesList[0:len(matchesList)-2]
   return (count, matchesList)
@@ -525,25 +525,34 @@ def removeDups(duplicate):
 
 
 def writeToExcelFile(findingsList, file_name, name):
-    import openpyxl
-    import os
+    # import openpyxl
+    # import os
+    #
+    # wb = openpyxl.Workbook()
+    # ws = wb.active
+    # ws['A1'] = textfile
+    # ws['A2'] = 'Word'
+    # ws['B2'] = 'Num Of Occurences'
+    #
+    # # print(findingsList)
+    #
+    # for word in findingsList:
+    #     ws.append(word)
+    #
+    # wb.save(path_to_save)
+    import csv
     import datetime
 
     now = datetime.datetime.now()
-    wb = openpyxl.Workbook()
-    ws = wb.active
-    ws['A1'] = textfile
-    ws['A2'] = 'Word'
-    ws['B2'] = 'Num Of Occurences'
-
-    # print(findingsList)
-
-    for word in findingsList:
-        ws.append(word)
-
-    excel_path_name = "/" + file_name + '-Word-occurences-' + name + "-" + now.strftime('%d-%m-%y-%H%M') + '.xlsx'
+    excel_path_name = "/" + file_name + '-Word-occurences-' + name + "-" + now.strftime('%d-%m-%y-%H%M') + '.csv'
     path_to_save = os.getcwd() + excel_path_name
-    wb.save(path_to_save)
+    title = ("Word", "Number of Occurences")
+
+    with open(path_to_save, 'w') as csvFile:
+        writer = csv.writer(csvFile)
+        writer.writerows([title] + findingsList)
+
+    csvFile.close()
 
 
 def openFile():
