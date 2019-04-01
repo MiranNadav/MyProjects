@@ -548,9 +548,10 @@ def writeToExcelFile(findingsList, file_name, name):
     path_to_save = os.getcwd() + excel_path_name
     title = ("Word", "Number of Occurences")
 
-    with open(path_to_save, 'w') as csvFile:
+    with open(path_to_save, 'w', encoding='utf-8-sig', newline='') as csvFile:
         writer = csv.writer(csvFile)
-        writer.writerows([title] + findingsList)
+        writer.writerows([title])
+        writer.writerows(findingsList)
 
     csvFile.close()
 
